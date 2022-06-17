@@ -30,17 +30,20 @@ def Event_display_id(request, E_id):
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
 def Event_display_specific(request, user_id):
-    user = User.objects.get(id=user_id)
-    event = Events.objects.filter(user=user, completed=False)
-    serializer = EventSerializer(event, many=True)
-    return Response(serializer.data)
+    try:
+        user = User.objects.get(id=user_id)
+        event = Events.objects.filter(user=user, completed=False)
+        serializer = EventSerializer(event, many=True)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response({"error" : "No User Found"})
 
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
-def Event_display_completed(request, E_id):
+def Event_display_completed(request, user_id):
     try:
-        user = User.objects.get(id=E_id)
+        user = User.objects.get(id=user_id)
         event = Events.objects.filter(user=user, completed=True)
         serializer = EventSerializer(event, many=True)
         return Response(serializer.data)

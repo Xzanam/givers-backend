@@ -10,10 +10,7 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
-
 # Create your views here.
-
-
 class generateKey:
     @staticmethod
     def returnValue():
@@ -27,12 +24,13 @@ class generateKey:
 def registerUser(request):
     key = generateKey.returnValue()
     data = request.data
+    
     try:
         user = User.objects.create(
             password=make_password(data['password']),
             email=data['email'],
             full_name=data['full_name'],
-            last_login=data['last_login'],
+            # last_login=data['last_login'],
             username=data['username'],
             province=data['province'],
             district=data['district'],
@@ -50,33 +48,31 @@ def registerUser(request):
             volunteer=data['volunteer'],
             organization=data['organization'],
             admin=data['admin'],
-            otp=key['OTP'],
-            activation_key=key['totp'],
             active=data['active'],
-            staff=data['staff'],
             verify=data['verify'],
             reject=data['reject'],
-            age=data['age']
-
+            age=data['age'],
+            staff=data['staff'],
+            otp=key['OTP'],
+            activation_key=key['totp'],
         )
-        user = User.objects.get(email=data['email'])
         user.images = request.FILES.get('image')
         user.identity = request.FILES.get('identity')
         user.save()
         serializer = UserSerializer(user, many=False)
 
-        email_template = render_to_string('signup_otp.html', {
-                                          "otp": key['OTP'], "username": serializer.data['username'], "email": serializer.data['email']})
-        sign_up = EmailMultiAlternatives(
-            "Otp Verification",
-            "Otp Verification",
-            settings.EMAIL_HOST_USER,
-            [serializer.data['email']],
-        )
-        sign_up.attach_alternative(email_template, 'text/html')
-        sign_up.send()
+        # email_template = render_to_string('signup_otp.html', {
+        #                                   "otp": key['OTP'], "username": serializer.data['username'], "email": serializer.data['email']})
+        # sign_up = EmailMultiAlternatives(
+        #     "Otp Verification",
+        #     "Otp Verification",
+        #     settings.EMAIL_HOST_USER,
+        #     [serializer.data['email']],
+        # )
+        # sign_up.attach_alternative(email_template, 'text/html')
+        # sign_up.send()
 
-        return Response(serializer.data)
+        return Response({"success" : "User Registered Successfully"})
     except:
         if(User.objects.get(email=data['email'])):
             if(User.objects.get(username=data['username'])):

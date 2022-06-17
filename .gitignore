@@ -5,6 +5,8 @@
 venv
 ./venv
 
+givers/.env
+.env
 ### Django ###
 *.log
 *.pot

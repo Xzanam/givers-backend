@@ -16,7 +16,7 @@ import django_filters
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def show_specific_category(request, category_id):
     try:
         category = Events.objects.filter(category=category_id)
@@ -27,7 +27,7 @@ def show_specific_category(request, category_id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def show_event_desc(request):
     try:
         category = Events.objects.order_by('-end_date')
@@ -38,7 +38,7 @@ def show_event_desc(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def show_event_postedtime(request):
     try:
         category = Events.objects.order_by('-posted_at')
@@ -49,7 +49,7 @@ def show_event_postedtime(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def searchevents(request):
     query = request.query_params.get('keyword')
     print('query:', query)
@@ -62,7 +62,7 @@ def searchevents(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def searchuser(request):
     query = request.query_params.get('keyword')
     print('query:', query)
@@ -75,7 +75,7 @@ def searchuser(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def show_number_approved_requested(request, E_id):
     try:
         approval_no = requestevents.objects.filter(
@@ -92,7 +92,7 @@ def show_number_approved_requested(request, E_id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def search_by_skills(request, skill):
     try:
         skills_get = Skills.objects.filter(skills=skill)
@@ -114,7 +114,7 @@ class UserFilter(django_filters.FilterSet):
         fields = ['province', 'district', 'municipality', 'ward','gender', 'volunteer',]
 
 
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class advance_search(ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
