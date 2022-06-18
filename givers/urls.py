@@ -33,7 +33,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include("customuser.urls")),
     path('api/events/', include("events.urls"), name="events"),
-    path('api/users/', include("authentication.urls")),
+    path('api/authentication/', include("authentication.urls")),
     path('api/volunteer/', include("volunteer.urls")),
     path('api/organization/', include("organization.urls")),
     path('api/validate/', include("validators.urls")),

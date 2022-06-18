@@ -59,20 +59,6 @@ def registerUser(request):
         user.images = request.FILES.get('image')
         user.identity = request.FILES.get('identity')
         user.save()
-        serializer = UserSerializer(user, many=False)
-
-        # email_template = render_to_string('signup_otp.html', {
-        #                                   "otp": key['OTP'], "username": serializer.data['username'], "email": serializer.data['email']})
-        # sign_up = EmailMultiAlternatives(
-        #     "Otp Verification",
-        #     "Otp Verification",
-        #     settings.EMAIL_HOST_USER,
-        #     [serializer.data['email']],
-        # )
-        # sign_up.attach_alternative(email_template, 'text/html')
-        # sign_up.send()
-
-        return Response({"success" : "User Registered Successfully"})
     except:
         if(User.objects.get(email=data['email'])):
             if(User.objects.get(username=data['username'])):
@@ -84,7 +70,24 @@ def registerUser(request):
 
         return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
+    serializer = UserSerializer(user, many=False)
 
+    try:
+        email_template = render_to_string('signup_otp.html', {
+                                            "otp": key['OTP'], "username": serializer.data['username'], "email": serializer.data['email']})
+        sign_up_msg = EmailMultiAlternatives(
+            "Otp Verification",
+            "Otp Verification",
+            settings.EMAIL_HOST_USER,
+            [serializer.data['email']],
+        )
+
+        sign_up_msg.attach_alternative(email_template, 'text/html')
+        sign_up_msg.send()
+        return Response({"success" : "User Registered Successfully"})
+    except:
+        return Response({"info" : "User Created Successfully but email not sent"})
+ 
 @api_view(["POST"])
 def RegisterVerify(request, otp, id):
     try:

@@ -14,4 +14,6 @@ urlpatterns = [
     path('register/', views.registerEvent, name='register_events'),
     # To update a event
     path('update/<int:pk>/', views.EventUpdate.as_view(), name='update_events'),
+    # Display all the events of the current login user
+    path('self/', views.getLoginUserEvents, name="display all login user events")
 ]
