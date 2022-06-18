@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 from customuser.models import User
 from category.models import EventCategory
 
+from givers.decorators import user_is_organization
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -52,6 +54,7 @@ def Event_display_completed(request, user_id):
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@user_is_organization
 def registerEvent(request):
     data = request.data
     print("==================")
@@ -59,7 +62,6 @@ def registerEvent(request):
     print("==================")
     try:
         Event = Events.objects.create(
-            # user=User.objects.get(username=data['username']),
             user = request.user,
             category=EventCategory.objects.get(category=data['category']),
             name=data['name'],
