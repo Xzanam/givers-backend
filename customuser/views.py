@@ -10,6 +10,9 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
 # Create your views here.
 class generateKey:
     @staticmethod
@@ -19,9 +22,45 @@ class generateKey:
         OTP = totp.now()
         return {"totp": secret, "OTP": OTP}
 
-
+@swagger_auto_schema(
+    methods=['post'],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['password','email', 'full_name', 'username', 'province', 'district', 'municipality', 'ward', 'skills', 'address', 'gender', 'phone', 'facebook', 'instagram', 'twitter', 'website', 'description', 'volunteer', 'organization', 'admin', 'active', 'verify', 'reject', 'age', 'staff'],
+        properties={
+            'password':openapi.Schema(type=openapi.TYPE_STRING),
+            'email':openapi.Schema(type=openapi.TYPE_STRING),
+            'full_name':openapi.Schema(type=openapi.TYPE_STRING),
+            'username':openapi.Schema(type=openapi.TYPE_STRING),
+            'province':openapi.Schema(type=openapi.TYPE_STRING),
+            'district':openapi.Schema(type=openapi.TYPE_STRING),
+            'municipality':openapi.Schema(type=openapi.TYPE_STRING, example="Bhaktapur"),
+            'ward':openapi.Schema(type=openapi.TYPE_STRING),
+            'skills':openapi.Schema(type=openapi.TYPE_STRING, example="Health"),
+            'address':openapi.Schema(type=openapi.TYPE_STRING),
+            'gender':openapi.Schema(type=openapi.TYPE_STRING),
+            'phone':openapi.Schema(type=openapi.TYPE_STRING), 
+            'facebook':openapi.Schema(type=openapi.TYPE_STRING), 
+            'instagram':openapi.Schema(type=openapi.TYPE_STRING), 
+            'twitter':openapi.Schema(type=openapi.TYPE_STRING), 
+            'website':openapi.Schema(type=openapi.TYPE_STRING), 
+            'description':openapi.Schema(type=openapi.TYPE_STRING), 
+            'volunteer':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=True), 
+            'organization':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=False), 
+            'admin':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=False), 
+            'active':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=False), 
+            'verify':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=False), 
+            'reject':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=False), 
+            'age':openapi.Schema(type=openapi.TYPE_STRING), 
+            'staff':openapi.Schema(type=openapi.TYPE_STRING), 
+        },
+    ),
+)
 @api_view(['POST'])
 def registerUser(request):
+    """
+        Register a user
+    """
     key = generateKey.returnValue()
     data = request.data
     
@@ -30,7 +69,6 @@ def registerUser(request):
             password=make_password(data['password']),
             email=data['email'],
             full_name=data['full_name'],
-            # last_login=data['last_login'],
             username=data['username'],
             province=data['province'],
             district=data['district'],

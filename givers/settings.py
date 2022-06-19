@@ -207,6 +207,17 @@ CORS_ORIGIN_WHITELIST = (
     "https://www.givers.tk",
 )
 
+# Swagger Setting
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS' : {
+        "Auth Token eg [Bearer (JWT) ]" : {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
+
 # if you are using postgres comment the above DATABASE code in line 129
 # --------------------------------**********--------------------------------
 

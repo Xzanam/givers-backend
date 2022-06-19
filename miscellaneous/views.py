@@ -16,8 +16,12 @@ import django_filters
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def show_specific_category(request, category_id):
+    """
+        Show all the events of certain Category
+        Parameters : category_id
+    """
     try:
         category = Events.objects.filter(category=category_id)
         serializer = EventSerializer(category, many=True)
@@ -27,8 +31,11 @@ def show_specific_category(request, category_id):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def show_event_desc(request):
+    """
+        Get all the events on the basis of END DateTime
+    """
     try:
         category = Events.objects.order_by('-end_date')
         serializer = EventSerializer(category, many=True)
@@ -38,8 +45,11 @@ def show_event_desc(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def show_event_postedtime(request):
+    """
+        Get all the events on the basis of posted DateTime
+    """
     try:
         category = Events.objects.order_by('-posted_at')
         serializer = EventSerializer(category, many=True)
@@ -49,8 +59,11 @@ def show_event_postedtime(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def searchevents(request):
+    """
+        Search events on the basis of name of the event
+    """
     query = request.query_params.get('keyword')
     print('query:', query)
     if query == None:
@@ -62,8 +75,11 @@ def searchevents(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def searchuser(request):
+    """
+        Search User on the basis of username 
+    """
     query = request.query_params.get('keyword')
     print('query:', query)
     if query == None:
@@ -75,8 +91,11 @@ def searchuser(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def show_number_approved_requested(request, E_id):
+    """
+        Find the number of approved, reviewed, requested RequestEvent Modal
+    """
     try:
         approval_no = requestevents.objects.filter(
             event_id=E_id, approved=True).count()
@@ -92,7 +111,7 @@ def show_number_approved_requested(request, E_id):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def search_by_skills(request, skill):
     try:
         skills_get = Skills.objects.filter(skills=skill)

@@ -6,6 +6,9 @@ from events.models import Events
 
 
 class requestevents(models.Model):
+    """
+        User use this model to apply for volunteering in an event
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Events, on_delete=models.CASCADE)
     user_details = models.FileField(default="avatar.jpg", upload_to="request_volunteer")
@@ -30,6 +33,9 @@ class requestevents(models.Model):
 
 
 class interestedevents(models.Model):
+    """
+        User use this model to show an interest to participate in the event
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Events, on_delete=models.CASCADE)
     interested = models.BooleanField(default=False)

@@ -11,15 +11,14 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
 # Create your views here.
 
+
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def invite(request, U_id, E_id):
+    """
+        Send an invitation from logged in organization to the vounteer
+    """
     data = request.data
-    print("======================================")
-    print(data)
-    print(U_id)
-    print(E_id)
-    print("======================================")
     try:
         invite = Invitation.objects.get_or_create(
             user=User.objects.get(id=U_id),
@@ -48,16 +47,22 @@ def invite(request, U_id, E_id):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def invite_display_id(request, U_id):
+    """
+        Get All the Invitation List for a user
+    """
     invitation = Invitation.objects.filter(
         user_id=U_id).order_by('-created_at')
     serializer = InvitationSerializer(invitation, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def invite_display_id_read(request, I_id):
+    """
+        Mark Read to an Invitation
+    """
     invitation = Invitation.objects.get(id=I_id)
     invitation.read = True
     invitation.save()

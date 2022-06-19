@@ -1,5 +1,6 @@
 from customuser.serializers import UserSerializer
 from events.serializers import EventSerializer
+from givers.decorators import user_is_organization
 from volunteer.models import requestevents
 from .serializer import RequestFormSerializer, approvalSerializer, requestedSerializer
 from rest_framework import status
@@ -12,28 +13,51 @@ from .models import requestform
 from django.template.loader import render_to_string
 from django.core.mail.message import EmailMultiAlternatives
 from django.conf import settings
+
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
 # Create your views here.
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def showrequest(request, E_id, V_id):
+def showrequest(request, E_id, U_id):
+    """
+        Get the requestevents with given user_id(U_id) and event_id(E_id)
+    """
     try:
-        approval = requestevents.objects.filter(user_id=V_id, event_id=E_id)
+        approval = requestevents.objects.filter(user_id=U_id, event_id=E_id)
         serializer = approvalSerializer(approval, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except requestevents.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
+@swagger_auto_schema(
+    methods=['post'],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['approved', 'task_assigned'],
+        properties={
+            'approved':openapi.Schema(type=openapi.TYPE_BOOLEAN, default=True, description="True to approve the request event of a volunteer"),
+            'task_assigned':openapi.Schema(type=openapi.TYPE_STRING, description="If approved, then assign task.")
+        },
+    ),
+)
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def approval(request, E_id, V_id):
+    """
+        For the approval of the Request Form for an events
+        Function 1 : To approve or mark pending to a request form based on questions and answer
+        Function 2 : Send email on the case if the Request form is accepted or rejected to the volunteer
+    """
     print(request.data)
     try:
+        approved_bool = True if request.data['approved'] == True else False
         approval = requestevents.objects.get(user_id=V_id, event_id=E_id)
-        approval.approved = request.data['approved']
-        approval.pending = request.data['pending']
+        approval.approved = approved_bool
+        approval.pending = not(approved_bool)
         approval.task_assigned=request.data['task_assigned']
         approval.save()
         serializer = approvalSerializer(approval, many=False)
@@ -73,6 +97,9 @@ def approval(request, E_id, V_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def show_all_requested(request, E_id):
+    """
+        Show all the request form of the given event id
+    """
     try:
         requested = requestevents.objects.filter(
             event_id=E_id, request_volunteer=True)
@@ -81,10 +108,27 @@ def show_all_requested(request, E_id):
     except requestevents.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
+@swagger_auto_schema(
+    methods=['post'],
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['id', 'ques_1', 'ques_2', 'ques_3', 'file_1'],
+        properties={
+            'id':openapi.Schema(type=openapi.TYPE_INTEGER, description="Id of an event"),
+            'ques_1':openapi.Schema(type=openapi.TYPE_STRING),
+            'ques_2':openapi.Schema(type=openapi.TYPE_STRING),
+            'ques_3':openapi.Schema(type=openapi.TYPE_STRING),
+            'file_1':openapi.Schema(type=openapi.TYPE_STRING),
+        },
+    ),
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@user_is_organization
 def requestforms(request):
+    """
+        Creating a request form for an organization
+    """
     data = request.data
     try:
         form = requestform.objects.create(
@@ -104,6 +148,9 @@ def requestforms(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getrequestedform(request, E_id):
+    """
+        Get the request form the given event id
+    """
     try:
         requestedform = requestform.objects.get(event_id=E_id)
         serializer = RequestFormSerializer(requestedform, many=False)

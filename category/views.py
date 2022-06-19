@@ -8,16 +8,22 @@ from rest_framework.response import Response
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def category_event(request):
+    """
+        Display all the category of the events
+    """
     all_events = EventCategory.objects.all()
     serializer = EventCategorySerializer(all_events, many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def skills(request):
+    """
+        Display all the skills listted for Volunteers
+    """
     all_ward = Skills.objects.all()
     serializer = SkillSerializer(all_ward, many=True)
     return Response(serializer.data)
