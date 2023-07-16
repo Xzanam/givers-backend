@@ -1,5 +1,11 @@
 import collections
 
+import sys
+if sys.version_info.major == 3 and sys.version_info.minor >= 10:
+    from collections.abc import MutableSet
+    collections.MutableSet = collections.abc.MutableSet
+else: 
+    from collections import MutableSet
 
 class OrderedSet(collections.MutableSet):
     def __init__(self, iterable=None):

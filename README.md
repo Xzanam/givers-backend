@@ -9,7 +9,7 @@ This repo contains the backend source code for the **Volunteer Management** syst
 3. HTML, CSS for template mail
 
 ## Usage
-
+	
 ### Install necessary requirements
 
 You need to have [_python_](https://www.python.org/) as well as _pip_ installed in your system to run this project. [_Postgres_](https://www.postgresql.org/) also need to be explicitly installed and configured as per your convinience. 

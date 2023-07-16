@@ -80,19 +80,9 @@ def registerUser(request):
             phone=data['phone'],
             facebook=data['facebook'],
             instagram=data['instagram'],
-            twitter=data['twitter'],
-            website=data['website'],
             description=data['description'],
             volunteer=data['volunteer'],
             organization=data['organization'],
-            admin=data['admin'],
-            active=data['active'],
-            verify=data['verify'],
-            reject=data['reject'],
-            age=data['age'],
-            staff=data['staff'],
-            otp=key['OTP'],
-            activation_key=key['totp'],
         )
         user.images = request.FILES.get('image')
         user.identity = request.FILES.get('identity')

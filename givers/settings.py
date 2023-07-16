@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "invitation.apps.InvitationConfig",
     "coreapi",
     "drf_yasg",
+    
 ]
 
 REST_FRAMEWORK = {
